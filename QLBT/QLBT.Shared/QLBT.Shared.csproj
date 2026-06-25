@@ -6,4 +6,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="WatsonTcp" Version="5.1.7" />
+  </ItemGroup>
+
 </Project>
