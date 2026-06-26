@@ -7,6 +7,16 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
-
+        <TabControl>
+            <TabItem Header="Quản lý bài tập">
+                <Label Content="Tab QLBT"></Label>
+            </TabItem>
+            <TabItem Header="Quản lý sinh viên">
+                <Label Content="Tab QLSV"></Label>
+            </TabItem>
+            <TabItem Header="Quản lý lớp">
+                <Label Content="Tab QLL"></Label>
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
