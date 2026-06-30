@@ -16,7 +16,7 @@
                 <views:ServerManagement/>
             </TabItem>
             <TabItem Header="Quản lý sinh viên">
-                <views:QLSV/>
+                
             </TabItem>
             <TabItem Header="Quản lý lớp">
                 
