@@ -4,9 +4,23 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:QLBT.Server"
+        xmlns:views="clr-namespace:QLBT.Server.Views"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="QLBT Server" Height="450" Width="800">
     <Grid>
+        <TabControl>
+            <TabItem Header="Quản lý bài tập">
+                <views:AssignmentView/>
+            </TabItem>
+            <TabItem Header="Quản lý máy chủ">
+                <views:ServerManagement/>
+            </TabItem>
+            <TabItem Header="Quản lý sinh viên">
 
+            </TabItem>
+            <TabItem Header="Quản lý lớp">
+
+            </TabItem>
+        </TabControl>
     </Grid>
 </Window>
