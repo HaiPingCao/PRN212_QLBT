@@ -15,6 +15,11 @@ dotnet sln add QLBT.Client
 
 dotnet add QLBT.Server reference QLBT.Shared
 dotnet add QLBT.Client reference QLBT.Shared
+```
+
+Cài các dependency của project
+
+```
 
 dotnet add package WatsonTcp --version 5.1.7
 dotnet add QLBT.Server package BCrypt.Net-Next --version 4.2.0
@@ -23,3 +28,5 @@ dotnet add QLBT.Server package Microsoft.Extensions.Configuration.Json --version
 dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.28
 dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.Design --version 8.0.28
 ```
+
+! QLBT.Server có file appsettings.json có chứa tài khoản đăng nhập db mẫu, chỉnh sửa nếu có thay đổi
