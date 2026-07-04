@@ -51,9 +51,9 @@ namespace QLBT.Server.Models
     {
         public int Id { get; set; }
         public string TenLop { get; set; } = "";
-        public string NienKhoa { get; set; } = "";
+        public string KiHoc { get; set; } = "";
         public string ChuyenNganh { get; set; } = "";
 
-        public override string ToString() => $"{TenLop} ({NienKhoa} - {ChuyenNganh})";
+        public override string ToString() => $"{TenLop} ({KiHoc} - {ChuyenNganh})";
     }
 }

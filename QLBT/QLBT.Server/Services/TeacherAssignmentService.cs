@@ -48,7 +48,7 @@ namespace QLBT.Server.Services
                 {
                     Id = l.Id,
                     TenLop = l.TenLop,
-                    NienKhoa = l.KiHoc,
+                    KiHoc = l.KiHoc,
                     ChuyenNganh = l.ChuyenNganh
                 })
                 .ToList();
