@@ -79,3 +79,4 @@ _ReSharper*/
 *.tmp
 *.temp
 ~$*
+/QLBT/QLBT.Server/appsettings.json
