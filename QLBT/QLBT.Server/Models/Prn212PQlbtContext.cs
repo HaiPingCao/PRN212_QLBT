@@ -1,8 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 
 namespace QLBT.Server.Models;
 
@@ -42,7 +42,7 @@ public partial class Prn212PQlbtContext : DbContext
     {
         modelBuilder.Entity<BaiNop>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bai_nop__3213E83FCEF317B0");
+            entity.HasKey(e => e.Id).HasName("PK__bai_nop__3213E83FF2940F34");
 
             entity.ToTable("bai_nop");
 
@@ -82,7 +82,7 @@ public partial class Prn212PQlbtContext : DbContext
 
         modelBuilder.Entity<BaiTap>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__bai_tap__3213E83F1606B509");
+            entity.HasKey(e => e.Id).HasName("PK__bai_tap__3213E83F79C8CE57");
 
             entity.ToTable("bai_tap");
 
@@ -115,11 +115,11 @@ public partial class Prn212PQlbtContext : DbContext
 
         modelBuilder.Entity<GiaoVien>(entity =>
         {
-            entity.HasKey(e => e.Msgv).HasName("PK__giao_vie__763F3D562EE70694");
+            entity.HasKey(e => e.Msgv).HasName("PK__giao_vie__763F3D5671CE486E");
 
             entity.ToTable("giao_vien");
 
-            entity.HasIndex(e => e.Email, "UQ__giao_vie__AB6E61644B9C60C5").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__giao_vie__AB6E61649D49751C").IsUnique();
 
             entity.Property(e => e.Msgv)
                 .HasMaxLength(20)
@@ -140,24 +140,24 @@ public partial class Prn212PQlbtContext : DbContext
 
         modelBuilder.Entity<Lop>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__lop__3213E83FF903EEB5");
+            entity.HasKey(e => e.Id).HasName("PK__lop__3213E83FF6EBE777");
 
             entity.ToTable("lop");
 
-            entity.HasIndex(e => new { e.TenLop, e.NienKhoa, e.ChuyenNganh }, "uq_lop").IsUnique();
+            entity.HasIndex(e => new { e.TenLop, e.KiHoc, e.ChuyenNganh }, "uq_lop").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("id");
             entity.Property(e => e.ChuyenNganh)
                 .HasMaxLength(100)
                 .HasColumnName("chuyen_nganh");
+            entity.Property(e => e.KiHoc)
+                .HasMaxLength(20)
+                .IsUnicode(false)
+                .HasColumnName("ki_hoc");
             entity.Property(e => e.Msgv)
                 .HasMaxLength(20)
                 .IsUnicode(false)
                 .HasColumnName("msgv");
-            entity.Property(e => e.NienKhoa)
-                .HasMaxLength(20)
-                .IsUnicode(false)
-                .HasColumnName("nien_khoa");
             entity.Property(e => e.TenLop)
                 .HasMaxLength(50)
                 .HasColumnName("ten_lop");
@@ -170,11 +170,11 @@ public partial class Prn212PQlbtContext : DbContext
 
         modelBuilder.Entity<SinhVien>(entity =>
         {
-            entity.HasKey(e => e.Mssv).HasName("PK__sinh_vie__763F1CDD254C164A");
+            entity.HasKey(e => e.Mssv).HasName("PK__sinh_vie__763F1CDD64B49FAB");
 
             entity.ToTable("sinh_vien");
 
-            entity.HasIndex(e => e.Email, "UQ__sinh_vie__AB6E6164FBA47FE3").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__sinh_vie__AB6E616403991CF1").IsUnique();
 
             entity.Property(e => e.Mssv)
                 .HasMaxLength(20)
@@ -195,7 +195,7 @@ public partial class Prn212PQlbtContext : DbContext
 
         modelBuilder.Entity<SinhVienLop>(entity =>
         {
-            entity.HasKey(e => new { e.LopId, e.Mssv }).HasName("PK__sinh_vie__4B357842C6FEB2E9");
+            entity.HasKey(e => new { e.LopId, e.Mssv }).HasName("PK__sinh_vie__4B357842C86C0932");
 
             entity.ToTable("sinh_vien_lop");
 

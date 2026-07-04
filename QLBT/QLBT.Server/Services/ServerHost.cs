@@ -6,7 +6,7 @@ using QLBT.Shared.Transport;
 using System;
 using System.IO;
 
-namespace QLBT.Server
+namespace QLBT.Server.Services
 {
     /// <summary>
     /// Composition root: quản lý vòng đời TcpServer + MessageHandler, và giữ các Service

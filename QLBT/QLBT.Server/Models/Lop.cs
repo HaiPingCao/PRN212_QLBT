@@ -11,7 +11,7 @@ public partial class Lop
 
     public string TenLop { get; set; } = null!;
 
-    public string NienKhoa { get; set; } = null!;
+    public string KiHoc { get; set; } = null!;
 
     public string ChuyenNganh { get; set; } = null!;
 

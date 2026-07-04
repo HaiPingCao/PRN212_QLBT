@@ -12,7 +12,7 @@ GO
 
 -- 2. Insert 2 Classes (Lớp)
 -- Note: id is IDENTITY(1,1), so they will automatically be assigned id 1 and 2.
-INSERT INTO lop (msgv, ten_lop, nien_khoa, chuyen_nganh)
+INSERT INTO lop (msgv, ten_lop, ki_hoc, chuyen_nganh)
 VALUES 
     ('GV001', N'SE1701', 'Su26', N'Kỹ thuật Phần mềm'),
     ('GV001', N'IS1702', 'Su26', N'Hệ thống Thông tin');
