@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="QLBT.Client/QLBT.Client.csproj" />
+  <Project Path="QLBT.Server/QLBT.Server.csproj" />
+  <Project Path="QLBT.Shared/QLBT.Shared.csproj" />
+</Solution>
