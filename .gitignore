@@ -80,3 +80,6 @@ _ReSharper*/
 *.temp
 ~$*
 /QLBT/QLBT.Server/appsettings.json
+/QLBT/.github
+/QLBT/QLBT.Server/a.md
+/QLBT/AGENTS.md
