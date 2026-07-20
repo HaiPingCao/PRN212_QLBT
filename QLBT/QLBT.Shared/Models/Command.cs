@@ -22,6 +22,7 @@
 
         // View / delete submission
         GET_SUBMISSION,
+        GET_SUBMISSION_BY_ASSIGNMENT,
         DELETE_SUBMISSION,
 
         // Download submission (Server → Student)

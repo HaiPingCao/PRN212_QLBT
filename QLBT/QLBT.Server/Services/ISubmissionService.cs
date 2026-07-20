@@ -32,6 +32,11 @@ namespace QLBT.Server.Services
         SubmissionDto? GetSubmission(int submissionId, string studentId);
 
         /// <summary>
+        /// Returns the student's own submission for the given assignment, if any.
+        /// </summary>
+        SubmissionDto? GetSubmissionByAssignment(int assignmentId, string studentId);
+
+        /// <summary>
         /// Deletes submission record and file on disk.
         /// </summary>
         bool DeleteSubmission(int submissionId, string studentId);

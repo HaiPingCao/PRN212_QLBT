@@ -76,6 +76,10 @@ namespace QLBT.Server.Handlers
                     HandleGetSubmission(clientId, msg, studentId);
                     break;
 
+                case Command.GET_SUBMISSION_BY_ASSIGNMENT:
+                    HandleGetSubmissionByAssignment(clientId, msg, studentId);
+                    break;
+
                 case Command.DELETE_SUBMISSION:
                     HandleDeleteSubmission(clientId, msg, studentId);
                     break;
@@ -216,6 +220,16 @@ namespace QLBT.Server.Handlers
                 return;
             }
 
+            _server.Reply(clientId, true, data: submission);
+        }
+
+        private void HandleGetSubmissionByAssignment(Guid clientId, Message msg, string studentId)
+        {
+            var data = Deserialize<GetSubmissionByAssignmentRequest>(msg.Data);
+            if (data == null) { _server.Reply(clientId, false, "Data null"); return; }
+
+            // No existing submission is a valid state (student hasn't submitted yet), not an error.
+            var submission = _submission.GetSubmissionByAssignment(data.AssignmentId, studentId);
             _server.Reply(clientId, true, data: submission);
         }
 

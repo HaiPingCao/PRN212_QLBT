@@ -148,6 +148,24 @@ namespace QLBT.Server.Services
             };
         }
 
+        public SubmissionDto? GetSubmissionByAssignment(int assignmentId, string studentId)
+        {
+            var bn = _db.BaiNops.FirstOrDefault(b =>
+                b.BaiTapId == assignmentId && b.Mssv == studentId);
+
+            if (bn == null) return null;
+
+            return new SubmissionDto
+            {
+                Id = bn.Id,
+                AssignmentId = bn.BaiTapId,
+                StudentId = bn.Mssv,
+                FileName = bn.TenFile,
+                SubmitCount = bn.SoLanNop,
+                SubmittedAt = bn.NgayNop
+            };
+        }
+
         public bool DeleteSubmission(int submissionId, string studentId)
         {
             var bn = _db.BaiNops.FirstOrDefault(b =>
