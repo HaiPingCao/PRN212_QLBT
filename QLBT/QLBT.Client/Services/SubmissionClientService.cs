@@ -110,6 +110,22 @@ namespace QLBT.Client.Services
                 ?.Deserialize<SubmissionDto>(JsonHandle.JsonOpts);
         }
 
+        public SubmissionDto? GetSubmissionByAssignment(int assignmentId)
+        {
+            var msg = new Message
+            {
+                Type = Command.GET_SUBMISSION_BY_ASSIGNMENT,
+                Token = _auth.Token ?? "",
+                Data = new GetSubmissionByAssignmentRequest { AssignmentId = assignmentId }
+            };
+
+            var response = _client.SendAndWait(msg);
+            if (response == null || !response.Success) return null;
+
+            return (response.Data as JsonElement?)
+                ?.Deserialize<SubmissionDto>(JsonHandle.JsonOpts);
+        }
+
         public bool DeleteSubmission(int submissionId)
         {
             var msg = new Message

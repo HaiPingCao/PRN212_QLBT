@@ -77,6 +77,11 @@
         public int SubmissionId { get; set; }
     }
 
+    public class GetSubmissionByAssignmentRequest
+    {
+        public int AssignmentId { get; set; }
+    }
+
     public class SubmissionDto
     {
         public int Id { get; set; }
