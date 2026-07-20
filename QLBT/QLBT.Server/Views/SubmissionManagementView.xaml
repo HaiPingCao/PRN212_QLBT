@@ -1,0 +1,52 @@
+<UserControl x:Class="QLBT.Server.Views.SubmissionManagementView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:QLBT.Server.Views"
+             mc:Ignorable="d"
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <TextBlock Grid.Row="0" Text="Quản lý bài nộp" FontWeight="Bold" FontSize="16" Margin="0,0,0,10" />
+
+        <!-- Bộ lọc -->
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,10">
+            <TextBlock Text="Lớp:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <ComboBox Name="cb_Lop" Width="220" DisplayMemberPath="TenLop"
+                      SelectionChanged="cb_Lop_SelectionChanged" />
+
+            <TextBlock Text="Bài tập:" VerticalAlignment="Center" Margin="16,0,6,0" />
+            <ComboBox Name="cb_BaiTap" Width="220" DisplayMemberPath="TieuDe" />
+
+            <Button Name="btn_Filter" Content="Lọc" Padding="10,4" Margin="16,0,0,0" Click="btn_Filter_Click" />
+            <Button Name="btn_Refresh" Content="Tải lại" Padding="10,4" Margin="8,0,0,0" Click="btn_Refresh_Click" />
+        </StackPanel>
+
+        <!-- Danh sách bài nộp -->
+        <DataGrid Grid.Row="2" Name="dg_Submissions" AutoGenerateColumns="False"
+                  IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow"
+                  SelectionChanged="dg_Submissions_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="MSSV" Binding="{Binding Mssv}" Width="90" />
+                <DataGridTextColumn Header="Họ tên" Binding="{Binding HoTenSinhVien}" Width="160" />
+                <DataGridTextColumn Header="Lớp" Binding="{Binding TenLop}" Width="120" />
+                <DataGridTextColumn Header="Bài tập" Binding="{Binding TieuDeBaiTap}" Width="*" />
+                <DataGridTextColumn Header="Tên file" Binding="{Binding TenFile}" Width="160" />
+                <DataGridTextColumn Header="Số lần nộp" Binding="{Binding SoLanNop}" Width="90" />
+                <DataGridTextColumn Header="Ngày nộp" Binding="{Binding NgayNop, StringFormat=dd/MM/yyyy HH:mm}" Width="130" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
+            <Button Name="btn_Delete" Content="Xóa bài nộp đã chọn" Padding="10,6"
+                    Background="#FFE5E5" IsEnabled="False" Click="btn_Delete_Click" />
+        </StackPanel>
+    </Grid>
+</UserControl>

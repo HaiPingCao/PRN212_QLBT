@@ -26,6 +26,7 @@ namespace QLBT.Server.Services
         public IAssignmentService AssignmentService { get; }
         public ISubmissionService SubmissionService { get; }
         public ITeacherAssignmentService TeacherAssignmentService { get; }
+        public ITeacherSubmissionService TeacherSubmissionService { get; }
 
         public ServerHost()
         {
@@ -39,6 +40,8 @@ namespace QLBT.Server.Services
 
             var teacherAssignmentService = new TeacherAssignmentService(Db);
             TeacherAssignmentService = teacherAssignmentService;
+
+            TeacherSubmissionService = new TeacherSubmissionService(Db);
 
             // Đồng bộ RootFolder ban đầu từ cấu hình đã lưu.
             var settings = LoadSettings();

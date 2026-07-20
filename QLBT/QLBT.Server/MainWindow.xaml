@@ -12,6 +12,9 @@
             <TabItem Header="Quản lý bài tập">
                 <views:AssignmentView/>
             </TabItem>
+            <TabItem Header="Quản lý bài nộp">
+                <views:SubmissionManagementView/>
+            </TabItem>
             <TabItem Header="Quản lý máy chủ">
                 <views:ServerManagement/>
             </TabItem>
