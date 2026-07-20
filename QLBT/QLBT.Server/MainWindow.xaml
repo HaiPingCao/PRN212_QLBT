@@ -22,5 +22,6 @@
                 <views:ClassManagementView/>
             </TabItem>
         </TabControl>
+        <!--test merge-->
     </Grid>
 </Window>
