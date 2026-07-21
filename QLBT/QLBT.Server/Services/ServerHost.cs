@@ -10,8 +10,10 @@ namespace QLBT.Server.Services
 {
     /// <summary>
     /// Composition root: quản lý vòng đời TcpServer + MessageHandler, và giữ các Service
-    /// dùng chung (DbContext, AssignmentService, SubmissionService, TeacherAssignmentService)
-    /// để các View (ServerManagement, AssignmentView) dùng chung mà không tự khởi tạo riêng.
+    /// dùng chung (DbContext, AssignmentService, SubmissionService, TeacherAssignmentService,
+    /// TeacherSubmissionService, TeacherStudentService, TeacherClassService)
+    /// để các View (ServerManagement, AssignmentView, SubmissionManagementView, StudentView,
+    /// ClassView) dùng chung mà không tự khởi tạo riêng.
     /// </summary>
     public sealed class ServerHost
     {
@@ -27,6 +29,8 @@ namespace QLBT.Server.Services
         public ISubmissionService SubmissionService { get; }
         public ITeacherAssignmentService TeacherAssignmentService { get; }
         public ITeacherSubmissionService TeacherSubmissionService { get; }
+        public ITeacherStudentService TeacherStudentService { get; }
+        public ITeacherClassService TeacherClassService { get; }
 
         public ServerHost()
         {
@@ -42,6 +46,8 @@ namespace QLBT.Server.Services
             TeacherAssignmentService = teacherAssignmentService;
 
             TeacherSubmissionService = new TeacherSubmissionService(Db);
+            TeacherStudentService = new TeacherStudentService(Db);
+            TeacherClassService = new TeacherClassService(Db);
 
             // Đồng bộ RootFolder ban đầu từ cấu hình đã lưu.
             var settings = LoadSettings();
@@ -123,3 +129,4 @@ namespace QLBT.Server.Services
         public string RootFolder { get; set; } = "Submissions";
     }
 }
+

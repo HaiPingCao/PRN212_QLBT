@@ -19,10 +19,10 @@
                 <views:ServerManagement/>
             </TabItem>
             <TabItem Header="Quản lý sinh viên">
-                
+                <views:StudentView/>
             </TabItem>
             <TabItem Header="Quản lý lớp">
-                
+                <views:ClassView/>
             </TabItem>
         </TabControl>
     </Grid>
