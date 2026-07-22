@@ -8,7 +8,6 @@
     <Grid>
         <TabControl Name="tabs">
             <TabItem Header="Lớp của tôi" Name="tab_Class" />
-            <TabItem Header="Quản lý sinh viên" Name="tab_Student" />
             <TabItem Header="Quản lý bài tập" Name="tab_Assignment" />
             <TabItem Header="Chấm điểm" Name="tab_Grading" />
         </TabControl>

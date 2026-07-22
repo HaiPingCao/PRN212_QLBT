@@ -40,10 +40,5 @@ namespace QLBT.Shared.Models
         // Cham diem (Teacher view)
         GetClassSubmissions,
         GradeSubmission,
-
-        // Quan ly tai khoan sinh vien (Teacher: xem/them/sua - khong duoc xoa, xoa chi lam o man hinh admin cua Server)
-        GetStudentList,
-        CreateStudent,
-        UpdateStudent,
     }
 }

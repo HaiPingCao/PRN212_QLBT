@@ -14,7 +14,6 @@ namespace QLBT.Server.Handlers
         private readonly ISubmissionService _submission;
         private readonly IClassService _class;
         private readonly ITeacherAssignmentService _teacherAssignment;
-        private readonly IStudentService _student;
 
         private const int ChunkSize = 64 * 1024; // 64KB per chunk
 
@@ -24,8 +23,7 @@ namespace QLBT.Server.Handlers
             IAssignmentService assignment,
             ISubmissionService submission,
             IClassService classService,
-            ITeacherAssignmentService teacherAssignment,
-            IStudentService studentService)
+            ITeacherAssignmentService teacherAssignment)
         {
             _server = server;
             _auth = auth;
@@ -33,7 +31,6 @@ namespace QLBT.Server.Handlers
             _submission = submission;
             _class = classService;
             _teacherAssignment = teacherAssignment;
-            _student = studentService;
 
             _server.OnMessage = Handle;
         }
@@ -134,18 +131,6 @@ namespace QLBT.Server.Handlers
 
                 case Command.GradeSubmission:
                     RequireTeacher(clientId, role, () => HandleGradeSubmission(clientId, msg, userId));
-                    break;
-
-                //case Command.GetStudentList:
-                //    RequireTeacher(clientId, role, () => _server.Reply(clientId, true, data: _student.GetAll()));
-                //    break;
-
-                case Command.CreateStudent:
-                    RequireTeacher(clientId, role, () => HandleCreateStudent(clientId, msg));
-                    break;
-
-                case Command.UpdateStudent:
-                    RequireTeacher(clientId, role, () => HandleUpdateStudent(clientId, msg));
                     break;
 
                 default:
@@ -393,34 +378,6 @@ namespace QLBT.Server.Handlers
 
             var ok = _submission.SetGrade(data.SubmissionId, teacherId, data.Grade);
             _server.Reply(clientId, ok, ok ? "" : "Không tìm thấy bài nộp");
-        }
-
-        // -------------------------------------------------------
-        // Quan ly tai khoan sinh vien (teacher)
-        // -------------------------------------------------------
-
-        private void HandleCreateStudent(Guid clientId, Message msg)
-        {
-            var data = Deserialize<CreateStudentRequest>(msg.Data);
-            if (data == null) { _server.Reply(clientId, false, "Data null"); return; }
-
-            var result = _student.Add(data);
-            _server.Reply(clientId, true, data: result);
-        }
-
-        private void HandleUpdateStudent(Guid clientId, Message msg)
-        {
-            var data = Deserialize<UpdateStudentRequest>(msg.Data);
-            if (data == null) { _server.Reply(clientId, false, "Data null"); return; }
-
-            var result = _student.Update(data);
-            if (result == null)
-            {
-                _server.Reply(clientId, false, "Không tìm thấy sinh viên");
-                return;
-            }
-
-            _server.Reply(clientId, true, data: result);
         }
 
         // -------------------------------------------------------

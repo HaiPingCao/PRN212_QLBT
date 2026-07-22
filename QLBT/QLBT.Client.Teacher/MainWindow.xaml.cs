@@ -20,12 +20,10 @@ namespace QLBT.Client.Teacher
             var classService = new ClassClientService(tcpClient, auth);
             var assignmentService = new TeacherAssignmentClientService(tcpClient, auth);
             var gradingService = new GradingClientService(tcpClient, auth);
-            var studentService = new StudentClientService(tcpClient, auth);
 
             Title = $"QLBT - Giáo viên ({auth.FullName})";
 
             tab_Class.Content = new MyClassesView(classService);
-            tab_Student.Content = new StudentManagementView(studentService);
             tab_Assignment.Content = new AssignmentManagementView(classService, assignmentService);
             tab_Grading.Content = new GradingView(assignmentService, gradingService);
         }

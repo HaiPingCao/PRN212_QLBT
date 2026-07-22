@@ -89,7 +89,7 @@ namespace QLBT.Server
             ((SubmissionService)SubmissionService).RootFolder = settings.RootFolder;
 
             _tcpServer = new TcpServer(settings.IpAddress, settings.Port);
-            _handler = new MessageHandler(_tcpServer, new AuthService(Db), AssignmentService, SubmissionService, ClassService, TeacherAssignmentService, StudentService);
+            _handler = new MessageHandler(_tcpServer, new AuthService(Db), AssignmentService, SubmissionService, ClassService, TeacherAssignmentService);
 
             _tcpServer.Start();
         }
