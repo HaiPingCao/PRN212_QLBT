@@ -1,0 +1,28 @@
+<Window x:Class="QLBT.Server.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:views="clr-namespace:QLBT.Server.Views"
+        mc:Ignorable="d"
+        Title="QLBT Server" Height="650" Width="1000" WindowStartupLocation="CenterScreen">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Quản lý máy chủ">
+                <views:ServerSettingsView />
+            </TabItem>
+            <TabItem Header="Học kỳ">
+                <views:HocKyManagementView />
+            </TabItem>
+            <TabItem Header="Giáo viên">
+                <views:TeacherManagementView />
+            </TabItem>
+            <TabItem Header="Lớp">
+                <views:ClassManagementView />
+            </TabItem>
+            <TabItem Header="Sinh viên">
+                <views:StudentManagementView />
+            </TabItem>
+        </TabControl>
+    </Grid>
+</Window>

@@ -1,6 +1,6 @@
 [
   {
-    "Name": "Server + Teacher + Student",
+    "Name": "Start all client and server",
     "Projects": [
       {
         "Path": "QLBT.Client.Student\\QLBT.Client.Student.csproj",

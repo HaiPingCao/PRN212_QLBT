@@ -23,7 +23,7 @@ USE PRN212_P_QLBT;
 GO
 
 -- =============================================
--- TABLES 
+-- TABLES
 -- =============================================
 
 CREATE TABLE giao_vien (
@@ -33,22 +33,33 @@ CREATE TABLE giao_vien (
     mat_khau    VARCHAR(255)  NOT NULL
 );
 
+CREATE TABLE hoc_ki (
+    id              INT IDENTITY(1,1) PRIMARY KEY,
+    ten_hoc_ki      NVARCHAR(20) NOT NULL UNIQUE,
+    ngay_bat_dau    DATE NULL,
+    ngay_ket_thuc   DATE NULL
+);
+
 CREATE TABLE lop (
     id               INT IDENTITY(1,1) PRIMARY KEY,
     msgv             VARCHAR(20)   NOT NULL,
     ten_lop          NVARCHAR(50)  NOT NULL,
-    ki_hoc        VARCHAR(20)   NOT NULL,
+    hoc_ki_id        INT           NOT NULL,
     chuyen_nganh     NVARCHAR(100) NOT NULL,
 
     CONSTRAINT fk_lop_giao_vien
         FOREIGN KEY (msgv)
         REFERENCES giao_vien(msgv),
 
+    CONSTRAINT fk_lop_hoc_ki
+        FOREIGN KEY (hoc_ki_id)
+        REFERENCES hoc_ki(id),
+
     CONSTRAINT uq_lop
         UNIQUE (
             ten_lop,
-            ki_hoc,
-            chuyen_nganh 
+            hoc_ki_id,
+            chuyen_nganh
         )
 );
 
@@ -107,12 +118,16 @@ CREATE TABLE bai_nop (
     duong_dan_file      NVARCHAR(500) NOT NULL,
     so_lan_nop          INT           NOT NULL DEFAULT 1,
     ngay_nop            DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    diem                DECIMAL(4,2)  NULL,
 
     CONSTRAINT uq_bai_nop
         UNIQUE (bai_tap_id, mssv),
 
     CONSTRAINT chk_so_lan_nop
         CHECK (so_lan_nop >= 1),
+
+    CONSTRAINT chk_diem
+        CHECK (diem IS NULL OR (diem >= 0 AND diem <= 10)),
 
     CONSTRAINT fk_bai_nop_bai_tap
         FOREIGN KEY (bai_tap_id, lop_id)

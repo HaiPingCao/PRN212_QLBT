@@ -1,0 +1,53 @@
+<Window x:Class="QLBT.Client.Student.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        mc:Ignorable="d"
+        Title="QLBT - Sinh viên" Height="500" Width="800" WindowStartupLocation="CenterScreen">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="300" />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Name="tb_Welcome" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+            <Button Name="btn_Refresh" Content="Tải lại" Padding="10,4" Margin="16,0,0,0" Click="btn_Refresh_Click" />
+        </StackPanel>
+
+        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" Orientation="Horizontal" Margin="0,0,0,8">
+            <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="0,0,6,0" />
+            <TextBox Name="tb_Search" Width="260" TextChanged="tb_Search_TextChanged" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="2" Grid.Column="0" Name="dg_Assignments" AutoGenerateColumns="False"
+                  IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow" Margin="0,0,10,0"
+                  SelectionChanged="dg_Assignments_SelectionChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Tiêu đề" Binding="{Binding Title}" Width="*" />
+                <DataGridTextColumn Header="Hạn nộp" Binding="{Binding DueDate, StringFormat=dd/MM/yyyy HH:mm}" Width="130" />
+                <DataGridTextColumn Header="Trạng thái" Binding="{Binding TrangThai}" Width="120" />
+                <DataGridTextColumn Header="Điểm" Binding="{Binding Grade}" Width="70" />
+            </DataGrid.Columns>
+        </DataGrid>
+
+        <Border Grid.Row="2" Grid.Column="1" BorderBrush="#CCCCCC" BorderThickness="1" Padding="12">
+            <StackPanel>
+                <TextBlock Name="tb_Title" FontWeight="Bold" FontSize="14" TextWrapping="Wrap" Margin="0,0,0,8" />
+                <TextBlock Name="tb_Description" TextWrapping="Wrap" Margin="0,0,0,8" />
+                <TextBlock Name="tb_DueDate" Margin="0,0,0,8" />
+                <TextBlock Name="tb_Grade" Margin="0,0,0,16" FontWeight="Bold" />
+
+                <Button Name="btn_DownloadProblem" Content="Tải đề bài" Padding="10,6" Margin="0,0,0,8" Click="btn_DownloadProblem_Click" />
+                <Button Name="btn_Submit" Content="Nộp bài" Padding="10,6" Margin="0,0,0,8" Click="btn_Submit_Click" />
+                <Button Name="btn_OpenSubmission" Content="Mở bài đã nộp" Padding="10,6" Click="btn_OpenSubmission_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</Window>

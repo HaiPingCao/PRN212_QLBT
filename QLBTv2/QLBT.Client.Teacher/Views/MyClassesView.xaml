@@ -1,0 +1,68 @@
+<UserControl x:Class="QLBT.Client.Teacher.Views.MyClassesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             mc:Ignorable="d" d:DesignHeight="500" d:DesignWidth="900">
+    <Grid Margin="10">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="0" Margin="0,0,10,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="Lớp của tôi" FontWeight="Bold" FontSize="16" VerticalAlignment="Center" />
+                <Button Name="btn_Refresh" Content="Tải lại" Padding="10,4" Margin="16,0,0,0" Click="btn_Refresh_Click" />
+            </StackPanel>
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                <TextBox Name="tb_SearchClass" Width="260" TextChanged="tb_SearchClass_TextChanged" />
+            </StackPanel>
+
+            <DataGrid Grid.Row="2" Name="dg_Classes" AutoGenerateColumns="False"
+                      IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow"
+                      SelectionChanged="dg_Classes_SelectionChanged">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="Lớp" Binding="{Binding TenLop}" Width="*" />
+                    <DataGridTextColumn Header="Học kỳ" Binding="{Binding TenHocKy}" Width="90" />
+                    <DataGridTextColumn Header="Chuyên ngành" Binding="{Binding ChuyenNganh}" Width="150" />
+                    <DataGridTextColumn Header="Số SV" Binding="{Binding SoSinhVien}" Width="70" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+
+        <Grid Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Name="tb_StudentsTitle" Text="Chọn một lớp để xem danh sách sinh viên"
+                       FontWeight="Bold" FontSize="16" Margin="0,0,0,8" />
+
+            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
+                <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                <TextBox Name="tb_SearchStudent" Width="260" TextChanged="tb_SearchStudent_TextChanged" />
+            </StackPanel>
+
+            <DataGrid Grid.Row="2" Name="dg_Students" AutoGenerateColumns="False"
+                      IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow">
+                <DataGrid.Columns>
+                    <DataGridTextColumn Header="MSSV" Binding="{Binding Mssv}" Width="90" />
+                    <DataGridTextColumn Header="Họ tên" Binding="{Binding HoTen}" Width="*" />
+                    <DataGridCheckBoxColumn Header="Đang học" Binding="{Binding DangThamGia}" Width="70" />
+                    <DataGridTextColumn Header="Ngày tham gia" Binding="{Binding NgayThamGia, StringFormat=dd/MM/yyyy}" Width="100" />
+                </DataGrid.Columns>
+            </DataGrid>
+        </Grid>
+    </Grid>
+</UserControl>
