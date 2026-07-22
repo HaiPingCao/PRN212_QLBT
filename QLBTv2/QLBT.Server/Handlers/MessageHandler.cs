@@ -140,9 +140,9 @@ namespace QLBT.Server.Handlers
                     RequireTeacher(clientId, role, () => HandleGradeSubmission(clientId, msg, userId));
                     break;
 
-                case Command.GetStudentList:
-                    RequireTeacher(clientId, role, () => _server.Reply(clientId, true, data: _student.GetAll()));
-                    break;
+                //case Command.GetStudentList:
+                //    RequireTeacher(clientId, role, () => _server.Reply(clientId, true, data: _student.GetAll()));
+                //    break;
 
                 case Command.CreateStudent:
                     RequireTeacher(clientId, role, () => HandleCreateStudent(clientId, msg));

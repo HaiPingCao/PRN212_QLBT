@@ -1,6 +1,6 @@
 Cách project này được tạo
 
-## v1 — `QLBT/` (bản cũ, 1 client dùng chung cho SV/GV)
+## v1 — `QLBT/`
 
 ```
 mkdir QLBT
@@ -49,10 +49,8 @@ dotnet add QLBT.Server reference QLBT.Shared
 dotnet add QLBT.Client.Teacher reference QLBT.Shared
 dotnet add QLBT.Client.Student reference QLBT.Shared
 
-# Giao thức TCP (dùng chung ở QLBT.Shared)
-dotnet add QLBT.Shared package WatsonTcp --version 5.1.7
 
-# CSDL + mật khẩu, chỉ QLBT.Server cần vì mọi truy vấn EF Core đều nằm ở đây
+dotnet add QLBT.Shared package WatsonTcp --version 5.1.7
 dotnet add QLBT.Server package BCrypt.Net-Next --version 4.2.0
 dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.28
 dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.Design --version 8.0.28
@@ -84,17 +82,6 @@ Tạo `QLBT.Server/appsettings.json` (set `Copy to Output Directory = Always`):
     "RootFolder": "Submissions"
   }
 }
-```
-
-## Cấu trúc kết quả
-
-```
-QLBTv2/
-  QLBTv2.slnx
-  QLBT.Shared/           -- Command/Payload/Envelope, TCP client-server wrapper (WatsonTcp)
-  QLBT.Server/            -- Host TCP + màn hình admin cục bộ (Học kỳ, Giáo viên, Lớp, Sinh viên)
-  QLBT.Client.Teacher/     -- App WPF cho giáo viên (đăng nhập, bài tập, chấm điểm, xem lớp)
-  QLBT.Client.Student/     -- App WPF cho sinh viên (đăng nhập, xem/nộp bài, xem điểm)
 ```
 
 Chạy multi-startup (`Server + Teacher + Student` cùng lúc) bằng file `QLBTv2/QLBTv2.slnLaunch` đã cấu hình sẵn trong Visual Studio.

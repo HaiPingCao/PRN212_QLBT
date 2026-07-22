@@ -8,7 +8,6 @@ namespace QLBT.Shared.Transport
     public sealed class TcpClient : IDisposable
     {
         private readonly WatsonTcpClient _client;
-        public event Action<Response>? ResponseReceived;
         private readonly ManualResetEventSlim _responseReady = new(false);
         private readonly Queue<Response> _responseQueue = new();
         private readonly object _queueLock = new();

@@ -1,4 +1,6 @@
-```
+## Lệnh cài đặt
+
+```bash
 dotnet add package Microsoft.EntityFrameworkCore.Design --version "8.*"
 dotnet add package Microsoft.EntityFrameworkCore.SqlServer --version "8.*"
 dotnet add package Microsoft.Extensions.Configuration --version "8.*"
@@ -7,7 +9,7 @@ dotnet add package Microsoft.Extensions.Configuration.Json --version "8.*"
 
 ## Kết nối csdl sử dụng EntityFrameworkCore
 
-```
+```bash
   Microsoft.EntityFrameworkCore.SQLServer
   Microsoft.EntityFrameworkCore.Design
 ```
@@ -18,7 +20,7 @@ Cài đặt
 `dotnet tool install --global dotnet-ef --version 8.0.6`
 Gen Model bằng EF
 
-```
+```bash
 dotnet ef dbcontext scaffold "Server=(local);uid=sa;password=123;database=PRN212_P_QLBT;Encrypt=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SQLServer --output-dir Models
 ```
 
@@ -26,7 +28,7 @@ dotnet ef dbcontext scaffold "Server=(local);uid=sa;password=123;database=PRN212
 
 Cài json (nếu không có)
 
-```
+```bash
 Microsoft.Extensions.Configuration
 Microsoft.Extensions.Configuration.Json
 ```

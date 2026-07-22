@@ -4,7 +4,6 @@ namespace QLBT.Shared.Models
     {
         // Auth
         Login,
-        LoginResponse,
 
         // Assignment (Student view)
         GetAssignmentList,
@@ -15,10 +14,8 @@ namespace QLBT.Shared.Models
 
         // Submit assignment - Upload (Student → Server)
         SubmitAssignment,
-        SubmitReady,
         FileChunk,
         FileEnd,
-        SubmitOk,
 
         // View / delete submission
         GetSubmission,
@@ -31,7 +28,7 @@ namespace QLBT.Shared.Models
         FileChunkDown,
         FileEndDown,
 
-        // Lop (Teacher view, chi xem - quan ly lop nam o man hinh admin cua QLBT.Server)
+        // Lop (Teacher)
         GetClassList,
         GetClassStudents,
 

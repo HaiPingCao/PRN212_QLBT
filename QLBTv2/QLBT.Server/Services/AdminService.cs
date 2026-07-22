@@ -109,6 +109,8 @@ namespace QLBT.Server.Services
             var em = email.Trim();
             if (_db.GiaoViens.Any(g => g.Email == em))
                 throw new InvalidOperationException($"Email '{em}' da duoc su dung.");
+            if (_db.SinhViens.Any(s => s.Email == em))
+                throw new InvalidOperationException($"Email '{em}' da duoc su dung boi mot sinh vien.");
 
             if (string.IsNullOrWhiteSpace(matKhau))
                 throw new InvalidOperationException("Vui long nhap mat khau cho giao vien moi.");
@@ -135,6 +137,8 @@ namespace QLBT.Server.Services
             var em = email.Trim();
             if (_db.GiaoViens.Any(g => g.Email == em && g.Msgv != msgv))
                 throw new InvalidOperationException($"Email '{em}' da duoc su dung.");
+            if (_db.SinhViens.Any(s => s.Email == em))
+                throw new InvalidOperationException($"Email '{em}' da duoc su dung boi mot sinh vien.");
 
             gv.HoTen = hoTen.Trim();
             gv.Email = em;

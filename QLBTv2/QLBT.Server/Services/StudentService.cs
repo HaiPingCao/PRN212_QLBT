@@ -36,6 +36,8 @@ namespace QLBT.Server.Services
             var email = input.Email.Trim();
             if (_db.SinhViens.Any(s => s.Email == email))
                 throw new InvalidOperationException($"Email '{email}' đã được sử dụng bởi sinh viên khác.");
+            if (_db.GiaoViens.Any(g => g.Email == email))
+                throw new InvalidOperationException($"Email '{email}' đã được sử dụng bởi một giáo viên.");
 
             if (string.IsNullOrWhiteSpace(input.MatKhau))
                 throw new InvalidOperationException("Vui lòng nhập mật khẩu cho sinh viên mới.");
@@ -62,6 +64,8 @@ namespace QLBT.Server.Services
             var email = input.Email.Trim();
             if (_db.SinhViens.Any(s => s.Email == email && s.Mssv != input.Mssv))
                 throw new InvalidOperationException($"Email '{email}' đã được sử dụng bởi sinh viên khác.");
+            if (_db.GiaoViens.Any(g => g.Email == email))
+                throw new InvalidOperationException($"Email '{email}' đã được sử dụng bởi một giáo viên.");
 
             sv.HoTen = input.HoTen.Trim();
             sv.Email = email;
