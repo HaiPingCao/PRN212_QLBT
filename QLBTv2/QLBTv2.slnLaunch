@@ -1,0 +1,19 @@
+[
+  {
+    "Name": "Server + Teacher + Student",
+    "Projects": [
+      {
+        "Path": "QLBT.Client.Student\\QLBT.Client.Student.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "QLBT.Client.Teacher\\QLBT.Client.Teacher.csproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "QLBT.Server\\QLBT.Server.csproj",
+        "Action": "Start"
+      }
+    ]
+  }
+]
