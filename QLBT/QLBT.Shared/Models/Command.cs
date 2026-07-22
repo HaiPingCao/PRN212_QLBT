@@ -17,9 +17,8 @@ namespace QLBT.Shared.Models
         FileChunk,
         FileEnd,
 
-        // View / delete submission
+        // View submission
         GetSubmission,
-        DeleteSubmission,
 
         // Download submission (Server → Student/Teacher)
         DownloadSubmission,

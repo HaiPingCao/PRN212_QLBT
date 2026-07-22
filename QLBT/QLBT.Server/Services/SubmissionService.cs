@@ -20,6 +20,17 @@ namespace QLBT.Server.Services
 
         public string BeginUpload(int assignmentId, string studentId, string fileName, long fileSize)
         {
+            var assignment = _db.BaiTaps.FirstOrDefault(bt => bt.Id == assignmentId);
+            if (assignment == null)
+                throw new InvalidOperationException("Bài tập không tồn tại.");
+
+            if (DateTime.Now > assignment.HanNop)
+                throw new InvalidOperationException("Đã hết hạn nộp bài, không thể nộp/nộp lại.");
+
+            var existing = _db.BaiNops.FirstOrDefault(b => b.BaiTapId == assignmentId && b.Mssv == studentId);
+            if (existing != null && existing.Diem.HasValue)
+                throw new InvalidOperationException("Bài đã được chấm điểm, không thể nộp lại.");
+
             var uploadId = Guid.NewGuid().ToString();
             var session = new UploadSession
             {
@@ -128,19 +139,6 @@ namespace QLBT.Server.Services
         {
             var bn = _db.BaiNops.FirstOrDefault(b => b.BaiTapId == assignmentId && b.Mssv == studentId);
             return bn == null ? null : ToDto(bn);
-        }
-
-        public bool DeleteSubmission(int submissionId, string studentId)
-        {
-            var bn = _db.BaiNops.FirstOrDefault(b => b.Id == submissionId && b.Mssv == studentId);
-            if (bn == null) return false;
-
-            if (File.Exists(bn.DuongDanFile))
-                File.Delete(bn.DuongDanFile);
-
-            _db.BaiNops.Remove(bn);
-            _db.SaveChanges();
-            return true;
         }
 
         public List<SubmissionDto> GetClassSubmissions(int assignmentId, string teacherId)

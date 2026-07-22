@@ -87,9 +87,12 @@ namespace QLBT.Client.Student
             tb_DueDate.Text = $"Hạn nộp: {item.DueDate:dd/MM/yyyy HH:mm} — {item.TrangThai}";
             tb_Grade.Text = item.Grade.HasValue ? $"Điểm: {item.Grade}" : "Chưa có điểm";
 
+            var isPastDue = DateTime.Now > item.DueDate;
+            var isGraded = item.Grade.HasValue;
+
             btn_DownloadProblem.IsEnabled = !string.IsNullOrEmpty(item.ProblemFileName);
-            btn_Submit.IsEnabled = true;
-            btn_OpenSubmission.IsEnabled = true;
+            btn_Submit.IsEnabled = !isPastDue && !isGraded;
+            btn_OpenSubmission.IsEnabled = item.HasSubmitted;
         }
 
         private void btn_Refresh_Click(object sender, RoutedEventArgs e)
@@ -119,15 +122,16 @@ namespace QLBT.Client.Student
             var dialog = new OpenFileDialog { Title = "Chọn file bài làm", Filter = "Tất cả file (*.*)|*.*" };
             if (dialog.ShowDialog() != true) return;
 
-            var submissionId = _submission.SubmitAssignment(_selected.Id, dialog.FileName);
-            if (submissionId < 0)
+            var (ok, _, error) = _submission.SubmitAssignment(_selected.Id, dialog.FileName);
+            if (!ok)
             {
-                MessageBox.Show("Nộp bài thất bại.", "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
+                MessageBox.Show(string.IsNullOrEmpty(error) ? "Nộp bài thất bại." : error, "Lỗi", MessageBoxButton.OK, MessageBoxImage.Error);
                 return;
             }
 
             MessageBox.Show("Nộp bài thành công.", "Thành công", MessageBoxButton.OK, MessageBoxImage.Information);
             LoadAssignments();
+            ClearDetail();
         }
 
         private void btn_OpenSubmission_Click(object sender, RoutedEventArgs e)

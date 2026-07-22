@@ -99,10 +99,6 @@ namespace QLBT.Server.Handlers
                     HandleGetSubmission(clientId, msg, userId);
                     break;
 
-                case Command.DeleteSubmission:
-                    HandleDeleteSubmission(clientId, msg, userId);
-                    break;
-
                 case Command.DownloadSubmission:
                     HandleDownloadSubmission(clientId, msg, userId, role);
                     break;
@@ -233,8 +229,15 @@ namespace QLBT.Server.Handlers
             var data = Deserialize<SubmitAssignmentRequest>(msg.Data);
             if (data == null) { _server.Reply(clientId, false, "Data null"); return; }
 
-            var uploadId = _submission.BeginUpload(data.AssignmentId, studentId, data.FileName, data.FileSize);
-            _server.Reply(clientId, true, data: new SubmitReadyResponse { UploadId = uploadId });
+            try
+            {
+                var uploadId = _submission.BeginUpload(data.AssignmentId, studentId, data.FileName, data.FileSize);
+                _server.Reply(clientId, true, data: new SubmitReadyResponse { UploadId = uploadId });
+            }
+            catch (InvalidOperationException ex)
+            {
+                _server.Reply(clientId, false, ex.Message);
+            }
         }
 
         private void HandleFileChunk(Guid clientId, Message msg)
@@ -286,21 +289,6 @@ namespace QLBT.Server.Handlers
             }
 
             _server.Reply(clientId, true, data: submission);
-        }
-
-        private void HandleDeleteSubmission(Guid clientId, Message msg, string studentId)
-        {
-            var data = Deserialize<DeleteSubmissionRequest>(msg.Data);
-            if (data == null) { _server.Reply(clientId, false, "Data null"); return; }
-
-            var ok = _submission.DeleteSubmission(data.SubmissionId, studentId);
-            if (!ok)
-            {
-                _server.Reply(clientId, false, "Submission not found or access denied");
-                return;
-            }
-
-            _server.Reply(clientId, true);
         }
 
         private void HandleDownloadSubmission(Guid clientId, Message msg, string userId, Role role)

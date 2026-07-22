@@ -105,11 +105,6 @@ namespace QLBT.Shared.Models
         public decimal? Grade { get; set; }
     }
 
-    public class DeleteSubmissionRequest
-    {
-        public int SubmissionId { get; set; }
-    }
-
     // Download submission
     public class DownloadSubmissionRequest
     {

@@ -19,10 +19,10 @@ namespace QLBT.Client.Student.Services
             _auth = auth;
         }
 
-        /// <summary>Tai len file bai lam. Tra ve submissionId neu thanh cong, -1 neu that bai.</summary>
-        public int SubmitAssignment(int assignmentId, string filePath)
+        /// <summary>Tai len file bai lam. Tra ve (thanh cong, submissionId, thong bao loi neu that bai).</summary>
+        public (bool Ok, int SubmissionId, string Error) SubmitAssignment(int assignmentId, string filePath)
         {
-            if (!File.Exists(filePath)) return -1;
+            if (!File.Exists(filePath)) return (false, -1, "Không tìm thấy file đã chọn.");
 
             var fileName = Path.GetFileName(filePath);
             var fileBytes = File.ReadAllBytes(filePath);
@@ -36,10 +36,11 @@ namespace QLBT.Client.Student.Services
             };
 
             var initResponse = _client.SendAndWait(initMsg);
-            if (initResponse == null || !initResponse.Success) return -1;
+            if (initResponse == null) return (false, -1, "Không thể kết nối tới máy chủ.");
+            if (!initResponse.Success) return (false, -1, initResponse.Error);
 
             var ready = (initResponse.Data as JsonElement?)?.Deserialize<SubmitReadyResponse>(JsonHandle.JsonOpts);
-            if (ready == null) return -1;
+            if (ready == null) return (false, -1, "Phản hồi không hợp lệ từ máy chủ.");
 
             var uploadId = ready.UploadId;
             var totalChunks = (int)Math.Ceiling((double)fileSize / ChunkSize);
@@ -59,7 +60,8 @@ namespace QLBT.Client.Student.Services
                 };
 
                 var chunkResponse = _client.SendAndWait(chunkMsg);
-                if (chunkResponse == null || !chunkResponse.Success) return -1;
+                if (chunkResponse == null) return (false, -1, "Không thể kết nối tới máy chủ.");
+                if (!chunkResponse.Success) return (false, -1, chunkResponse.Error);
             }
 
             var endMsg = new Message
@@ -70,10 +72,11 @@ namespace QLBT.Client.Student.Services
             };
 
             var endResponse = _client.SendAndWait(endMsg);
-            if (endResponse == null || !endResponse.Success) return -1;
+            if (endResponse == null) return (false, -1, "Không thể kết nối tới máy chủ.");
+            if (!endResponse.Success) return (false, -1, endResponse.Error);
 
             var ok = (endResponse.Data as JsonElement?)?.Deserialize<SubmitOkResponse>(JsonHandle.JsonOpts);
-            return ok?.SubmissionId ?? -1;
+            return ok == null ? (false, -1, "Phản hồi không hợp lệ từ máy chủ.") : (true, ok.SubmissionId, "");
         }
 
         public SubmissionDto? GetSubmissionByAssignment(int assignmentId)
@@ -89,19 +92,6 @@ namespace QLBT.Client.Student.Services
             if (response == null || !response.Success) return null;
 
             return (response.Data as JsonElement?)?.Deserialize<SubmissionDto>(JsonHandle.JsonOpts);
-        }
-
-        public bool DeleteSubmission(int submissionId)
-        {
-            var msg = new Message
-            {
-                Type = Command.DeleteSubmission,
-                Token = _auth.Token ?? "",
-                Data = new DeleteSubmissionRequest { SubmissionId = submissionId }
-            };
-
-            var response = _client.SendAndWait(msg);
-            return response?.Success ?? false;
         }
 
         /// <summary>Tai bai nop cua chinh sinh vien. Tra ve duong dan file da luu, null neu that bai.</summary>
