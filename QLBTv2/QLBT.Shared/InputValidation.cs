@@ -18,9 +18,9 @@ namespace QLBT.Shared
             @"^[A-Za-z0-9]{5}$",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
-        // Ma lop: dung 6 chu so.
+        // Ma lop: dung 6 ky tu, gom chu va so.
         private static readonly Regex ClassCodeRegex = new(
-            @"^[0-9]{6}$",
+            @"^[A-Za-z0-9]{6}$",
             RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         public const int MinPasswordLength = 6;

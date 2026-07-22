@@ -14,7 +14,6 @@
         <Grid Grid.Column="0" Margin="0,0,10,0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
-                <RowDefinition Height="Auto" />
                 <RowDefinition Height="1.4*" />
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="Auto" />
@@ -28,12 +27,7 @@
                 <Button Name="btn_Refresh" Content="Tải lại" Padding="10,4" Margin="8,0,0,0" Click="btn_Refresh_Click" />
             </StackPanel>
 
-            <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0,0,0,8">
-                <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="0,0,6,0" />
-                <TextBox Name="tb_Search" Width="260" TextChanged="tb_Search_TextChanged" />
-            </StackPanel>
-
-            <DataGrid Grid.Row="2" Name="dg_Classes" AutoGenerateColumns="False"
+            <DataGrid Grid.Row="1" Name="dg_Classes" AutoGenerateColumns="False"
                       IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow"
                       SelectionChanged="dg_Classes_SelectionChanged">
                 <DataGrid.Columns>
@@ -46,10 +40,10 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <TextBlock Grid.Row="3" Name="tb_EnrollmentTitle" Text="Chọn một lớp để quản lý sinh viên"
+            <TextBlock Grid.Row="2" Name="tb_EnrollmentTitle" Text="Chọn một lớp để quản lý sinh viên"
                        FontWeight="Bold" FontSize="14" Margin="0,12,0,8" />
 
-            <DataGrid Grid.Row="4" Name="dg_Enrollments" AutoGenerateColumns="False" Height="150"
+            <DataGrid Grid.Row="3" Name="dg_Enrollments" AutoGenerateColumns="False" Height="150"
                       IsReadOnly="True" SelectionMode="Single" SelectionUnit="FullRow"
                       SelectionChanged="dg_Enrollments_SelectionChanged">
                 <DataGrid.Columns>
@@ -62,17 +56,22 @@
                 </DataGrid.Columns>
             </DataGrid>
 
-            <StackPanel Grid.Row="5" Orientation="Horizontal" Margin="0,8,0,4">
+            <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0,8,0,4">
                 <Button Name="btn_ReactivateStudent" Content="Cho tham gia lại" Padding="10,4" IsEnabled="False" Click="btn_ReactivateStudent_Click" />
                 <Button Name="btn_RemoveStudent" Content="Cho rời lớp" Padding="10,4" Margin="8,0,0,0"
                         Background="#FFE5E5" IsEnabled="False" Click="btn_RemoveStudent_Click" />
             </StackPanel>
 
-            <StackPanel Grid.Row="6" Orientation="Vertical" Margin="0,8,0,0">
+            <StackPanel Grid.Row="5" Orientation="Vertical" Margin="0,8,0,0">
                 <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
                     <TextBlock Text="Thêm sinh viên vào lớp (chọn nhiều, tick vào ô đầu dòng):" FontWeight="Bold" VerticalAlignment="Center" TextWrapping="Wrap" />
                     <Button Name="btn_AddSelected" Content="Thêm sinh viên đã chọn" Padding="10,4" Margin="16,0,0,0"
                             IsEnabled="False" Click="btn_AddSelected_Click" />
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,4">
+                    <TextBlock Text="Tìm kiếm:" VerticalAlignment="Center" Margin="0,0,6,0" />
+                    <TextBox Name="tb_SearchAvailable" Width="260" TextChanged="tb_SearchAvailable_TextChanged" />
                 </StackPanel>
 
                 <DataGrid Name="dg_AvailableStudents" AutoGenerateColumns="False" Height="150"

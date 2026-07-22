@@ -20,6 +20,7 @@ namespace QLBT.Server.Views
         private int? _selectedClassId;
 
         private List<LopAdminItem> _allClasses = new();
+        private List<SelectableStudent> _allAvailableStudents = new();
 
         public ClassManagementView()
         {
@@ -53,22 +54,8 @@ namespace QLBT.Server.Views
         private void LoadClasses()
         {
             _allClasses = Service.GetAllLop();
-            ApplyFilter();
+            dg_Classes.ItemsSource = _allClasses;
         }
-
-        private void ApplyFilter()
-        {
-            var keyword = tb_Search.Text.Trim();
-            dg_Classes.ItemsSource = string.IsNullOrEmpty(keyword)
-                ? _allClasses
-                : _allClasses.Where(l =>
-                    l.TenLop.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
-                    l.TenGiaoVien.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
-                    l.TenHocKy.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
-                    l.ChuyenNganh.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
-        }
-
-        private void tb_Search_TextChanged(object sender, TextChangedEventArgs e) => ApplyFilter();
 
         // Form: Them moi / Sua
 
@@ -109,6 +96,8 @@ namespace QLBT.Server.Views
 
             tb_EnrollmentTitle.Text = "Chọn một lớp để quản lý sinh viên";
             dg_Enrollments.ItemsSource = null;
+            _allAvailableStudents = new List<SelectableStudent>();
+            tb_SearchAvailable.Text = "";
             dg_AvailableStudents.ItemsSource = null;
             btn_ReactivateStudent.IsEnabled = false;
             btn_RemoveStudent.IsEnabled = false;
@@ -136,8 +125,23 @@ namespace QLBT.Server.Views
         private void RefreshAvailableStudents()
         {
             if (_selectedClassId == null) return;
-            dg_AvailableStudents.ItemsSource = Service.GetAvailableStudents(_selectedClassId.Value);
+            _allAvailableStudents = Service.GetAvailableStudents(_selectedClassId.Value);
+            tb_SearchAvailable.Text = "";
+            ApplyAvailableFilter();
         }
+
+        private void ApplyAvailableFilter()
+        {
+            var keyword = tb_SearchAvailable.Text.Trim();
+            dg_AvailableStudents.ItemsSource = string.IsNullOrEmpty(keyword)
+                ? _allAvailableStudents
+                : _allAvailableStudents.Where(s =>
+                    s.Mssv.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+                    s.HoTen.Contains(keyword, StringComparison.OrdinalIgnoreCase) ||
+                    s.Email.Contains(keyword, StringComparison.OrdinalIgnoreCase)).ToList();
+        }
+
+        private void tb_SearchAvailable_TextChanged(object sender, TextChangedEventArgs e) => ApplyAvailableFilter();
 
         // -------------------------------------------------------
         // Events: danh sach lop / form Them-Sua
@@ -176,7 +180,7 @@ namespace QLBT.Server.Views
 
             if (!InputValidation.IsValidClassCode(tb_TenLop.Text))
             {
-                MessageBox.Show("Mã lớp phải gồm đúng 6 chữ số.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                MessageBox.Show("Mã lớp phải gồm đúng 6 ký tự chữ và số.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 
@@ -304,9 +308,8 @@ namespace QLBT.Server.Views
         private void btn_AddSelected_Click(object sender, RoutedEventArgs e)
         {
             if (_selectedClassId == null) return;
-            if (dg_AvailableStudents.ItemsSource is not List<SelectableStudent> available) return;
 
-            var selectedIds = available.Where(s => s.IsSelected).Select(s => s.Mssv).ToList();
+            var selectedIds = _allAvailableStudents.Where(s => s.IsSelected).Select(s => s.Mssv).ToList();
             if (selectedIds.Count == 0)
             {
                 MessageBox.Show("Vui lòng chọn ít nhất một sinh viên (tick vào ô Chọn).", "Thiếu dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
