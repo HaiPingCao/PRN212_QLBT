@@ -1,39 +1,24 @@
-﻿using QLBT.Shared.Models;
+using QLBT.Shared.Models;
 
 namespace QLBT.Server.Services
 {
     public interface ISubmissionService
     {
         // Upload
-        /// <summary>
-        /// Initializes an upload session. Returns uploadId.
-        /// </summary>
         string BeginUpload(int assignmentId, string studentId, string fileName, long fileSize);
-
         void AddChunk(string uploadId, int chunkIndex, string base64Data);
-
-        /// <summary>
-        /// Assembles chunks, saves file, writes to DB. Returns submissionId.
-        /// </summary>
         int FinalizeUpload(string uploadId);
 
         // Download
-        /// <summary>
-        /// Returns problem file path for the server to stream chunks to the student.
-        /// </summary>
-        string? GetProblemFilePath(int assignmentId, string studentId);
+        string? GetSubmissionFilePath(int submissionId, string requesterId, Role role);
 
-        /// <summary>
-        /// Returns submission file path. Validates student ownership.
-        /// </summary>
-        string? GetSubmissionFilePath(int submissionId, string studentId);
-
-        // Management
-        SubmissionDto? GetSubmission(int submissionId, string studentId);
-
-        /// <summary>
-        /// Deletes submission record and file on disk.
-        /// </summary>
+        // Management (student)
+        /// <summary>Tra bai nop cua sinh vien theo bai tap (moi SV chi co toi da 1 bai nop/bai tap).</summary>
+        SubmissionDto? GetSubmissionByAssignment(int assignmentId, string studentId);
         bool DeleteSubmission(int submissionId, string studentId);
+
+        // Management (teacher)
+        List<SubmissionDto> GetClassSubmissions(int assignmentId, string teacherId);
+        bool SetGrade(int submissionId, string teacherId, decimal? grade);
     }
 }

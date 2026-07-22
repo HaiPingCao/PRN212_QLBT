@@ -1,4 +1,4 @@
-﻿using QLBT.Shared.Models;
+using QLBT.Shared.Models;
 using System.Text;
 using System.Text.Json;
 using WatsonTcp;
@@ -12,8 +12,8 @@ namespace QLBT.Shared.Transport
         public bool IsRunning { get; private set; }
 
         /// <summary>
-        /// MessageHandler tại QLBT.Server đăng ký vào delegate này.
-        /// TcpServer không biết gì về business logic.
+        /// MessageHandler tai QLBT.Server dang ky vao delegate nay.
+        /// TcpServer khong biet gi ve business logic.
         /// </summary>
         public Action<Guid, Message>? OnMessage { get; set; }
 

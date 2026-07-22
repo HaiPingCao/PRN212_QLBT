@@ -1,8 +1,6 @@
-﻿using QLBT.Server.Models;
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
+using QLBT.Server.Models;
+using QLBT.Shared.Models;
 
 namespace QLBT.Server.Services
 {
@@ -10,10 +8,6 @@ namespace QLBT.Server.Services
     {
         private readonly Prn212PQlbtContext _db;
 
-        /// <summary>
-        /// Thư mục gốc lưu dữ liệu bài tập/bài nộp. File đề được lưu tại
-        /// {RootFolder}/ProblemFiles/{assignmentId}/{tenFileGoc}
-        /// </summary>
         public string RootFolder { get; set; } = "Submissions";
 
         public TeacherAssignmentService(Prn212PQlbtContext db)
@@ -21,120 +15,106 @@ namespace QLBT.Server.Services
             _db = db;
         }
 
-        public List<TeacherAssignmentItem> GetAll()
+        public List<TeacherAssignmentDto> GetAll(string teacherId, int classId)
         {
-            return _db.BaiTaps
+            var query = _db.BaiTaps.Where(bt => bt.Lop.Msgv == teacherId);
+            if (classId > 0)
+                query = query.Where(bt => bt.LopId == classId);
+
+            return query
                 .OrderByDescending(bt => bt.NgayTao)
-                .Select(bt => new TeacherAssignmentItem
+                .Select(bt => new TeacherAssignmentDto
                 {
                     Id = bt.Id,
-                    LopId = bt.LopId,
+                    ClassId = bt.LopId,
                     TenLop = bt.Lop.TenLop,
-                    TieuDe = bt.TieuDe,
-                    MoTa = bt.MoTa,
-                    TenFileDe = bt.TenFileDe,
-                    HanNop = bt.HanNop,
-                    NgayTao = bt.NgayTao,
-                    SoBaiNop = bt.BaiNops.Count
+                    Title = bt.TieuDe,
+                    Description = bt.MoTa,
+                    ProblemFileName = bt.TenFileDe,
+                    DueDate = bt.HanNop,
+                    CreatedAt = bt.NgayTao,
+                    SubmissionCount = bt.BaiNops.Count
                 })
                 .ToList();
         }
 
-        public List<LopOption> GetAllLops()
+        public TeacherAssignmentDto? Create(string teacherId, CreateAssignmentRequest input)
         {
-            return _db.Lops
-                .OrderBy(l => l.TenLop)
-                .Select(l => new LopOption
-                {
-                    Id = l.Id,
-                    TenLop = l.TenLop,
-                    NienKhoa = l.NienKhoa,
-                    ChuyenNganh = l.ChuyenNganh
-                })
-                .ToList();
-        }
-
-        public TeacherAssignmentItem Add(CreateAssignmentInput input)
-        {
-            var lop = _db.Lops.Find(input.LopId)
-                ?? throw new InvalidOperationException("Lớp không tồn tại");
+            var lop = _db.Lops.FirstOrDefault(l => l.Id == input.ClassId && l.Msgv == teacherId);
+            if (lop == null) return null;
 
             var baiTap = new BaiTap
             {
-                LopId = input.LopId,
-                TieuDe = input.TieuDe,
-                MoTa = input.MoTa,
-                HanNop = input.HanNop,
+                LopId = input.ClassId,
+                TieuDe = input.Title,
+                MoTa = input.Description,
+                HanNop = input.DueDate,
                 NgayTao = DateTime.Now
             };
 
             _db.BaiTaps.Add(baiTap);
-            _db.SaveChanges(); // cần Id trước khi copy file vào thư mục theo assignmentId
+            _db.SaveChanges();
 
-            if (!string.IsNullOrWhiteSpace(input.SourceFilePath))
+            if (!string.IsNullOrWhiteSpace(input.ProblemFileName) && input.ProblemFileBase64 != null)
             {
-                var (tenFile, duongDan) = CopyProblemFile(baiTap.Id, input.SourceFilePath);
+                var (tenFile, duongDan) = SaveProblemFile(baiTap.Id, input.ProblemFileName, input.ProblemFileBase64);
                 baiTap.TenFileDe = tenFile;
                 baiTap.DuongDanFileDe = duongDan;
                 _db.SaveChanges();
             }
 
-            return new TeacherAssignmentItem
+            return new TeacherAssignmentDto
             {
                 Id = baiTap.Id,
-                LopId = baiTap.LopId,
+                ClassId = baiTap.LopId,
                 TenLop = lop.TenLop,
-                TieuDe = baiTap.TieuDe,
-                MoTa = baiTap.MoTa,
-                TenFileDe = baiTap.TenFileDe,
-                HanNop = baiTap.HanNop,
-                NgayTao = baiTap.NgayTao,
-                SoBaiNop = 0
+                Title = baiTap.TieuDe,
+                Description = baiTap.MoTa,
+                ProblemFileName = baiTap.TenFileDe,
+                DueDate = baiTap.HanNop,
+                CreatedAt = baiTap.NgayTao,
+                SubmissionCount = 0
             };
         }
 
-        public TeacherAssignmentItem? Update(UpdateAssignmentInput input)
+        public TeacherAssignmentDto? Update(string teacherId, UpdateAssignmentRequest input)
         {
-            var baiTap = _db.BaiTaps.FirstOrDefault(b => b.Id == input.Id);
+            var baiTap = _db.BaiTaps.FirstOrDefault(b => b.Id == input.Id && b.Lop.Msgv == teacherId);
             if (baiTap == null) return null;
 
-            baiTap.TieuDe = input.TieuDe;
-            baiTap.MoTa = input.MoTa;
-            baiTap.HanNop = input.HanNop;
-            // LopId không được thay đổi khi sửa.
+            baiTap.TieuDe = input.Title;
+            baiTap.MoTa = input.Description;
+            baiTap.HanNop = input.DueDate;
 
-            if (!string.IsNullOrWhiteSpace(input.SourceFilePath))
+            if (!string.IsNullOrWhiteSpace(input.ProblemFileName) && input.ProblemFileBase64 != null)
             {
-                // Xóa file đề cũ trước khi lưu file mới.
                 if (!string.IsNullOrEmpty(baiTap.DuongDanFileDe) && File.Exists(baiTap.DuongDanFileDe))
                     File.Delete(baiTap.DuongDanFileDe);
 
-                var (tenFile, duongDan) = CopyProblemFile(baiTap.Id, input.SourceFilePath);
+                var (tenFile, duongDan) = SaveProblemFile(baiTap.Id, input.ProblemFileName, input.ProblemFileBase64);
                 baiTap.TenFileDe = tenFile;
                 baiTap.DuongDanFileDe = duongDan;
             }
 
             _db.SaveChanges();
 
-            var lop = _db.Lops.Find(baiTap.LopId);
-
-            return new TeacherAssignmentItem
+            return new TeacherAssignmentDto
             {
                 Id = baiTap.Id,
-                LopId = baiTap.LopId,
-                TenLop = lop?.TenLop ?? "",
-                TieuDe = baiTap.TieuDe,
-                MoTa = baiTap.MoTa,
-                TenFileDe = baiTap.TenFileDe,
-                HanNop = baiTap.HanNop,
-                NgayTao = baiTap.NgayTao,
-                SoBaiNop = _db.BaiNops.Count(bn => bn.BaiTapId == baiTap.Id)
+                ClassId = baiTap.LopId,
+                TenLop = baiTap.Lop.TenLop,
+                Title = baiTap.TieuDe,
+                Description = baiTap.MoTa,
+                ProblemFileName = baiTap.TenFileDe,
+                DueDate = baiTap.HanNop,
+                CreatedAt = baiTap.NgayTao,
+                SubmissionCount = _db.BaiNops.Count(bn => bn.BaiTapId == baiTap.Id)
             };
         }
 
-        public bool Delete(int id)
+        public bool Delete(string teacherId, int id)
         {
-            var baiTap = _db.BaiTaps.FirstOrDefault(b => b.Id == id);
+            var baiTap = _db.BaiTaps.FirstOrDefault(b => b.Id == id && b.Lop.Msgv == teacherId);
             if (baiTap == null) return false;
 
             if (!string.IsNullOrEmpty(baiTap.DuongDanFileDe) && File.Exists(baiTap.DuongDanFileDe))
@@ -145,22 +125,20 @@ namespace QLBT.Server.Services
             return true;
         }
 
-        /// <summary>
-        /// Copy file đề từ máy giáo viên vào {RootFolder}/ProblemFiles/{assignmentId}/, giữ nguyên tên gốc.
-        /// Trả về (tên file, đường dẫn đầy đủ trên server).
-        /// </summary>
-        private (string TenFile, string DuongDan) CopyProblemFile(int assignmentId, string sourceFilePath)
+        public string? GetProblemFilePath(int assignmentId, string teacherId)
         {
-            if (!File.Exists(sourceFilePath))
-                throw new FileNotFoundException("Không tìm thấy file đề", sourceFilePath);
+            var bt = _db.BaiTaps.FirstOrDefault(b => b.Id == assignmentId && b.Lop.Msgv == teacherId);
+            if (bt == null || string.IsNullOrEmpty(bt.DuongDanFileDe)) return null;
+            return bt.DuongDanFileDe;
+        }
 
+        private (string TenFile, string DuongDan) SaveProblemFile(int assignmentId, string fileName, string base64)
+        {
             var folder = Path.Combine(RootFolder, "ProblemFiles", assignmentId.ToString());
             Directory.CreateDirectory(folder);
 
-            var fileName = Path.GetFileName(sourceFilePath);
             var destPath = Path.Combine(folder, fileName);
-
-            File.Copy(sourceFilePath, destPath, overwrite: true);
+            File.WriteAllBytes(destPath, Convert.FromBase64String(base64));
 
             return (fileName, destPath);
         }

@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace QLBT.Server.Models;
 
 public partial class SinhVienLop

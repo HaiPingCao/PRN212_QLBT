@@ -1,6 +1,0 @@
-<Solution>
-  <Project Path="QLBT.Client.Student/QLBT.Client.Student.csproj" />
-  <Project Path="QLBT.Client.Teacher/QLBT.Client.Teacher.csproj" />
-  <Project Path="QLBT.Server/QLBT.Server.csproj" />
-  <Project Path="QLBT.Shared/QLBT.Shared.csproj" />
-</Solution>

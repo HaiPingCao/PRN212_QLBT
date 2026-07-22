@@ -1,4 +1,4 @@
-﻿namespace QLBT.Shared.Models
+namespace QLBT.Shared.Models
 {
     public class Message
     {

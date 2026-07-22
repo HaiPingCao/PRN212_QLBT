@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace QLBT.Server.Models;
 
 public partial class Lop
@@ -11,11 +8,13 @@ public partial class Lop
 
     public string TenLop { get; set; } = null!;
 
-    public string NienKhoa { get; set; } = null!;
+    public int HocKiId { get; set; }
 
     public string ChuyenNganh { get; set; } = null!;
 
     public virtual ICollection<BaiTap> BaiTaps { get; set; } = new List<BaiTap>();
+
+    public virtual HocKi HocKi { get; set; } = null!;
 
     public virtual GiaoVien MsgvNavigation { get; set; } = null!;
 

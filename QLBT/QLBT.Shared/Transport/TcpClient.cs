@@ -1,4 +1,4 @@
-﻿using QLBT.Shared.Models;
+using QLBT.Shared.Models;
 using System.Text;
 using System.Text.Json;
 using WatsonTcp;
@@ -8,8 +8,6 @@ namespace QLBT.Shared.Transport
     public sealed class TcpClient : IDisposable
     {
         private readonly WatsonTcpClient _client;
-        public event Action<Response>? ResponseReceived;
-        private Response? _pendingResponse;
         private readonly ManualResetEventSlim _responseReady = new(false);
         private readonly Queue<Response> _responseQueue = new();
         private readonly object _queueLock = new();
@@ -81,16 +79,7 @@ namespace QLBT.Shared.Transport
         {
             if (!IsConnected)
             {
-                try
-                {
-                    _client.Connect();
-                }
-                catch (Exception ex)
-                {
-                    Console.WriteLine($"[E]: {ex}");
-                    return;
-                }
-
+                _client.Connect();
             }
         }
 
@@ -107,16 +96,6 @@ namespace QLBT.Shared.Transport
             if (!IsConnected) return false;
             var bytes = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(msg, JsonHandle.JsonOpts));
             return _client.Send(bytes);
-        }
-
-        public bool Send(string message)
-        {
-            if (!IsConnected)
-            {
-                return false;
-            }
-
-            return _client.Send(message);
         }
 
         public void Dispose()

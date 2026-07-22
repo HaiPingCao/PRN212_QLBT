@@ -1,6 +1,8 @@
 Cách project này được tạo
 
-## v1 — `QLBT/`
+> Lưu ý: bản v1 (`QLBT.Client` dùng chung cho SV/GV, không có UI thật) đã được viết lại hoàn toàn ở v2 và bản cũ đã bị xóa khỏi repo. Thư mục `QLBTv2/` sau khi hoàn thiện được đổi tên lại thành `QLBT/` (tên cuối cùng của project).
+
+## Lịch sử — v1 (đã xóa, chỉ còn ghi lại các lệnh scaffold)
 
 ```
 mkdir QLBT
@@ -26,9 +28,9 @@ dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.SqlServer --version
 dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.Design --version 8.0.28
 ```
 
-## v2 — `QLBTv2/` (bản viết lại, tách riêng client cho Giáo viên và Sinh viên)
+## v2 — bản viết lại (nay là `QLBT/`), tách riêng client cho Giáo viên và Sinh viên
 
-`QLBT.Server` giờ chỉ đóng vai trò host TCP + màn hình quản trị cục bộ (không còn kiêm luôn UI giáo viên). Nghiệp vụ giáo viên/sinh viên chuyển hẳn sang 2 app WPF riêng, dùng chung protocol/DTO trong `QLBT.Shared`.
+`QLBT.Server` chỉ đóng vai trò host TCP + màn hình quản trị cục bộ (không còn kiêm luôn UI giáo viên). Nghiệp vụ giáo viên/sinh viên chuyển hẳn sang 2 app WPF riêng, dùng chung protocol/DTO trong `QLBT.Shared`.
 
 ```
 mkdir QLBTv2
@@ -49,7 +51,6 @@ dotnet add QLBT.Server reference QLBT.Shared
 dotnet add QLBT.Client.Teacher reference QLBT.Shared
 dotnet add QLBT.Client.Student reference QLBT.Shared
 
-
 dotnet add QLBT.Shared package WatsonTcp --version 5.1.7
 dotnet add QLBT.Server package BCrypt.Net-Next --version 4.2.0
 dotnet add QLBT.Server package Microsoft.EntityFrameworkCore.SqlServer --version 8.0.28
@@ -59,13 +60,15 @@ dotnet add QLBT.Server package Microsoft.Extensions.Configuration.Binder --versi
 dotnet add QLBT.Server package Microsoft.Extensions.Configuration.Json --version 8.0.1
 ```
 
+Sau khi hoàn thiện, thư mục `QLBTv2/` và file solution `QLBTv2.slnx`/`QLBTv2.slnLaunch` được đổi tên lại thành `QLBT/`, `QLBT.slnx`, `QLBT.slnLaunch` — đây là tên chính thức cuối cùng của project.
+
 Sau đó tạo CSDL và scaffold model (xem `PRN_conf.md` cho chi tiết lệnh `dotnet ef dbcontext scaffold`):
 
 ```
 sqlcmd -S "(local)" -i QLBT.sql
 sqlcmd -S "(local)" -i QLBT_SampleData.sql
 
-cd QLBTv2/QLBT.Server
+cd QLBT/QLBT.Server
 dotnet ef dbcontext scaffold "Server=(local);uid=sa;password=<mật khẩu>;database=PRN212_P_QLBT;Encrypt=True;TrustServerCertificate=True;" Microsoft.EntityFrameworkCore.SqlServer --output-dir Models --force
 ```
 
@@ -84,6 +87,17 @@ Tạo `QLBT.Server/appsettings.json` (set `Copy to Output Directory = Always`):
 }
 ```
 
-Chạy multi-startup (`Server + Teacher + Student` cùng lúc) bằng file `QLBTv2/QLBTv2.slnLaunch` đã cấu hình sẵn trong Visual Studio.
+## Cấu trúc kết quả
+
+```
+QLBT/
+  QLBT.slnx
+  QLBT.Shared/            -- Command/Payload/Envelope, TCP client-server wrapper (WatsonTcp)
+  QLBT.Server/             -- Host TCP + màn hình admin cục bộ (Học kỳ, Giáo viên, Lớp, Sinh viên)
+  QLBT.Client.Teacher/      -- App WPF cho giáo viên (đăng nhập, bài tập, chấm điểm, xem lớp)
+  QLBT.Client.Student/      -- App WPF cho sinh viên (đăng nhập, xem/nộp bài, xem điểm)
+```
+
+Chạy multi-startup (`Server + Teacher + Student` cùng lúc) bằng file `QLBT/QLBT.slnLaunch` đã cấu hình sẵn trong Visual Studio.
 
 Xem thêm sơ đồ kiến trúc/luồng nghiệp vụ tại `report.md`.

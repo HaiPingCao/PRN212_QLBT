@@ -1,34 +1,50 @@
-﻿namespace QLBT.Shared.Models
+namespace QLBT.Shared.Models
 {
     public enum Command
     {
         // Auth
-        LOGIN,
-        LOGIN_RESPONSE,
+        Login,
 
         // Assignment (Student view)
-        GET_ASSIGNMENT_LIST,
-        GET_ASSIGNMENT_DETAIL,
+        GetAssignmentList,
+        GetAssignmentDetail,
 
-        // Download problem file (Server → Student)
-        DOWNLOAD_PROBLEM_FILE,
+        // Download problem file (Server → Student/Teacher)
+        DownloadProblemFile,
 
         // Submit assignment - Upload (Student → Server)
-        SUBMIT_ASSIGNMENT,
-        SUBMIT_READY,
-        FILE_CHUNK,
-        FILE_END,
-        SUBMIT_OK,
+        SubmitAssignment,
+        FileChunk,
+        FileEnd,
 
         // View / delete submission
-        GET_SUBMISSION,
-        DELETE_SUBMISSION,
+        GetSubmission,
+        DeleteSubmission,
 
-        // Download submission (Server → Student)
-        DOWNLOAD_SUBMISSION,
+        // Download submission (Server → Student/Teacher)
+        DownloadSubmission,
 
-        // Download chunks (Server → Student)
-        FILE_CHUNK_DOWN,
-        FILE_END_DOWN,
+        // Download chunks (Server → Client)
+        FileChunkDown,
+        FileEndDown,
+
+        // Lop (Teacher)
+        GetClassList,
+        GetClassStudents,
+
+        // Bai tap (Teacher CRUD)
+        GetTeacherAssignments,
+        CreateAssignment,
+        UpdateAssignment,
+        DeleteAssignment,
+
+        // Cham diem (Teacher view)
+        GetClassSubmissions,
+        GradeSubmission,
+
+        // Quan ly tai khoan sinh vien (Teacher: xem/them/sua - khong duoc xoa, xoa chi lam o man hinh admin cua Server)
+        GetStudentList,
+        CreateStudent,
+        UpdateStudent,
     }
 }

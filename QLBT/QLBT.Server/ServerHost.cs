@@ -1,17 +1,14 @@
-﻿using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Configuration;
+using System.IO;
 using QLBT.Server.Handlers;
 using QLBT.Server.Models;
 using QLBT.Server.Services;
 using QLBT.Shared.Transport;
-using System;
-using System.IO;
 
 namespace QLBT.Server
 {
     /// <summary>
-    /// Composition root: quản lý vòng đời TcpServer + MessageHandler, và giữ các Service
-    /// dùng chung (DbContext, AssignmentService, SubmissionService, TeacherAssignmentService)
-    /// để các View (ServerManagement, AssignmentView) dùng chung mà không tự khởi tạo riêng.
+    /// Composition root: quan ly vong doi TcpServer + MessageHandler va cac Service dung chung.
     /// </summary>
     public sealed class ServerHost
     {
@@ -25,22 +22,24 @@ namespace QLBT.Server
         public Prn212PQlbtContext Db { get; }
         public IAssignmentService AssignmentService { get; }
         public ISubmissionService SubmissionService { get; }
+        public IClassService ClassService { get; }
         public ITeacherAssignmentService TeacherAssignmentService { get; }
+        public IStudentService StudentService { get; }
+        public IAdminService AdminService { get; }
 
         public ServerHost()
         {
             Db = new Prn212PQlbtContext();
 
-            var assignmentService = new AssignmentService(Db);
-            AssignmentService = assignmentService;
-
-            var submissionService = new SubmissionService(Db, assignmentService);
+            AssignmentService = new AssignmentService(Db);
+            var submissionService = new SubmissionService(Db);
             SubmissionService = submissionService;
-
+            ClassService = new ClassService(Db);
             var teacherAssignmentService = new TeacherAssignmentService(Db);
             TeacherAssignmentService = teacherAssignmentService;
+            StudentService = new StudentService(Db);
+            AdminService = new AdminService(Db);
 
-            // Đồng bộ RootFolder ban đầu từ cấu hình đã lưu.
             var settings = LoadSettings();
             submissionService.RootFolder = settings.RootFolder;
             teacherAssignmentService.RootFolder = settings.RootFolder;
@@ -49,7 +48,7 @@ namespace QLBT.Server
         public ServerSettings LoadSettings()
         {
             var config = new ConfigurationBuilder()
-                .SetBasePath(Directory.GetCurrentDirectory())
+                .SetBasePath(AppContext.BaseDirectory)
                 .AddJsonFile(SettingsPath, optional: true, reloadOnChange: false)
                 .Build();
 
@@ -61,12 +60,11 @@ namespace QLBT.Server
             };
         }
 
-        /// <summary>
-        /// Ghi đè mục ServerSettings trong appsettings.json, giữ nguyên ConnectionStrings.
-        /// </summary>
+        /// <summary>Ghi de muc ServerSettings trong appsettings.json, giu nguyen ConnectionStrings.</summary>
         public void SaveSettings(ServerSettings settings)
         {
-            var json = File.Exists(SettingsPath) ? File.ReadAllText(SettingsPath) : "{}";
+            var path = Path.Combine(AppContext.BaseDirectory, SettingsPath);
+            var json = File.Exists(path) ? File.ReadAllText(path) : "{}";
             var node = System.Text.Json.Nodes.JsonNode.Parse(json) ?? new System.Text.Json.Nodes.JsonObject();
 
             node["ServerSettings"] = new System.Text.Json.Nodes.JsonObject
@@ -77,27 +75,21 @@ namespace QLBT.Server
             };
 
             var options = new System.Text.Json.JsonSerializerOptions { WriteIndented = true };
-            File.WriteAllText(SettingsPath, node.ToJsonString(options));
+            File.WriteAllText(path, node.ToJsonString(options));
 
-            // RootFolder áp dụng ngay cho các thao tác CRUD bài tập / nộp bài,
-            // kể cả khi TCP server chưa Start.
             ((SubmissionService)SubmissionService).RootFolder = settings.RootFolder;
             ((TeacherAssignmentService)TeacherAssignmentService).RootFolder = settings.RootFolder;
         }
 
-        /// <summary>
-        /// Khởi động TCP server với cấu hình truyền vào. Nếu server đang chạy,
-        /// tự động Stop server cũ trước khi khởi động với cấu hình mới.
-        /// </summary>
+        /// <summary>Khoi dong TCP server. Neu dang chay, tu Stop truoc khi khoi dong lai.</summary>
         public void Start(ServerSettings settings)
         {
-            if (IsRunning)
-                Stop();
+            if (IsRunning) Stop();
 
             ((SubmissionService)SubmissionService).RootFolder = settings.RootFolder;
 
             _tcpServer = new TcpServer(settings.IpAddress, settings.Port);
-            _handler = new MessageHandler(_tcpServer, new AuthService(Db), AssignmentService, SubmissionService);
+            _handler = new MessageHandler(_tcpServer, new AuthService(Db), AssignmentService, SubmissionService, ClassService, TeacherAssignmentService, StudentService);
 
             _tcpServer.Start();
         }

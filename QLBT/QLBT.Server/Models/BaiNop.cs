@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-
 namespace QLBT.Server.Models;
 
 public partial class BaiNop
@@ -20,6 +17,8 @@ public partial class BaiNop
     public int SoLanNop { get; set; }
 
     public DateTime NgayNop { get; set; }
+
+    public decimal? Diem { get; set; }
 
     public virtual BaiTap BaiTap { get; set; } = null!;
 
