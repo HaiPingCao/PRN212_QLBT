@@ -1,5 +1,6 @@
 using QLBT.Server.Models;
 using QLBT.Server.Services;
+using QLBT.Shared;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -100,13 +101,33 @@ namespace QLBT.Server.Views
                 return;
             }
 
+            if (!InputValidation.IsWithinLength(tb_Msgv.Text, 20) ||
+                !InputValidation.IsWithinLength(tb_HoTen.Text, 100) ||
+                !InputValidation.IsWithinLength(tb_Email.Text, 100))
+            {
+                MessageBox.Show("MSGV tối đa 20 ký tự, họ tên và email tối đa 100 ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!InputValidation.IsValidEmail(tb_Email.Text))
+            {
+                MessageBox.Show("Email không đúng định dạng.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!string.IsNullOrWhiteSpace(pb_MatKhau.Password) && !InputValidation.IsValidPassword(pb_MatKhau.Password))
+            {
+                MessageBox.Show($"Mật khẩu phải tối thiểu {InputValidation.MinPasswordLength} ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
                 if (_editingMsgv == null)
                 {
-                    if (string.IsNullOrWhiteSpace(pb_MatKhau.Password))
+                    if (!InputValidation.IsValidPassword(pb_MatKhau.Password))
                     {
-                        MessageBox.Show("Vui lòng nhập mật khẩu cho giáo viên mới.", "Thiếu dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show($"Vui lòng nhập mật khẩu tối thiểu {InputValidation.MinPasswordLength} ký tự cho giáo viên mới.", "Thiếu dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 

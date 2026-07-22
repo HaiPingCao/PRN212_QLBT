@@ -1,5 +1,6 @@
 using QLBT.Server.Models;
 using QLBT.Server.Services;
+using QLBT.Shared;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -164,6 +165,18 @@ namespace QLBT.Server.Views
             if (string.IsNullOrWhiteSpace(tb_TenLop.Text) || string.IsNullOrWhiteSpace(tb_ChuyenNganh.Text))
             {
                 MessageBox.Show("Vui lòng nhập đầy đủ tên lớp và chuyên ngành.", "Thiếu dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!InputValidation.IsWithinLength(tb_ChuyenNganh.Text, 100))
+            {
+                MessageBox.Show("Chuyên ngành tối đa 100 ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!InputValidation.IsValidClassCode(tb_TenLop.Text))
+            {
+                MessageBox.Show("Mã lớp phải gồm đúng 6 chữ số.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
 

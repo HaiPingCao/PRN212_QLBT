@@ -189,6 +189,9 @@ namespace QLBT.Server.Services
 
         public bool SetGrade(int submissionId, string teacherId, decimal? grade)
         {
+            if (grade.HasValue && (grade.Value < 0 || grade.Value > 10))
+                throw new ArgumentOutOfRangeException(nameof(grade), "Điểm phải là số từ 0 đến 10.");
+
             var bn = _db.BaiNops.Include(b => b.BaiTap).ThenInclude(bt => bt.Lop)
                 .FirstOrDefault(b => b.Id == submissionId && b.BaiTap.Lop.Msgv == teacherId);
             if (bn == null) return false;

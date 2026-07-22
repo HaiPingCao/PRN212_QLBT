@@ -1,4 +1,5 @@
 using QLBT.Server.Services;
+using QLBT.Shared;
 using QLBT.Shared.Models;
 using System;
 using System.Collections.Generic;
@@ -102,13 +103,32 @@ namespace QLBT.Server.Views
                 return;
             }
 
+            if (!InputValidation.IsWithinLength(tb_HoTen.Text, 100) ||
+                !InputValidation.IsWithinLength(tb_Email.Text, 100))
+            {
+                MessageBox.Show("Họ tên và email tối đa 100 ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!InputValidation.IsValidMssv(tb_Mssv.Text))
+            {
+                MessageBox.Show("MSSV phải gồm đúng 5 ký tự chữ và số.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (!InputValidation.IsValidEmail(tb_Email.Text))
+            {
+                MessageBox.Show("Email không đúng định dạng.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             try
             {
                 if (_editingMssv == null)
                 {
-                    if (string.IsNullOrWhiteSpace(pb_MatKhau.Password))
+                    if (!InputValidation.IsValidPassword(pb_MatKhau.Password))
                     {
-                        MessageBox.Show("Vui lòng nhập mật khẩu cho sinh viên mới.", "Thiếu dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        MessageBox.Show($"Vui lòng nhập mật khẩu tối thiểu {InputValidation.MinPasswordLength} ký tự cho sinh viên mới.", "Thiếu dữ liệu", MessageBoxButton.OK, MessageBoxImage.Warning);
                         return;
                     }
 
@@ -124,6 +144,12 @@ namespace QLBT.Server.Views
                 }
                 else
                 {
+                    if (!string.IsNullOrWhiteSpace(pb_MatKhau.Password) && !InputValidation.IsValidPassword(pb_MatKhau.Password))
+                    {
+                        MessageBox.Show($"Mật khẩu mới phải tối thiểu {InputValidation.MinPasswordLength} ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                        return;
+                    }
+
                     Service.Update(new UpdateStudentRequest
                     {
                         Mssv = _editingMssv,

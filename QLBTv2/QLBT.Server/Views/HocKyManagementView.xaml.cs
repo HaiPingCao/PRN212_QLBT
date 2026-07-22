@@ -1,5 +1,6 @@
 using QLBT.Server.Models;
 using QLBT.Server.Services;
+using QLBT.Shared;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,8 +83,26 @@ namespace QLBT.Server.Views
                 return;
             }
 
+            if (!InputValidation.IsWithinLength(tb_TenHocKy.Text, InputValidation.MaxHocKyNameLength))
+            {
+                MessageBox.Show($"Tên học kỳ tối đa {InputValidation.MaxHocKyNameLength} ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             var batDau = dp_BatDau.SelectedDate.HasValue ? DateOnly.FromDateTime(dp_BatDau.SelectedDate.Value) : (DateOnly?)null;
             var ketThuc = dp_KetThuc.SelectedDate.HasValue ? DateOnly.FromDateTime(dp_KetThuc.SelectedDate.Value) : (DateOnly?)null;
+
+            if (batDau.HasValue != ketThuc.HasValue)
+            {
+                MessageBox.Show("Phải nhập đồng thời cả ngày bắt đầu và ngày kết thúc, hoặc để trống cả hai.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
+            if (batDau.HasValue && ketThuc.HasValue && batDau.Value > ketThuc.Value)
+            {
+                MessageBox.Show("Ngày bắt đầu phải trước hoặc bằng ngày kết thúc.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             try
             {

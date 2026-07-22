@@ -1,5 +1,6 @@
 using Microsoft.Win32;
 using QLBT.Client.Teacher.Services;
+using QLBT.Shared;
 using QLBT.Shared.Models;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -177,7 +178,19 @@ namespace QLBT.Client.Teacher.Views
                 return;
             }
 
+            if (!InputValidation.IsWithinLength(tb_TieuDe.Text, 255))
+            {
+                MessageBox.Show("Tiêu đề tối đa 255 ký tự.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
+
             if (!TryBuildHanNop(out var hanNop)) return;
+
+            if (_editingId == null && hanNop <= DateTime.Now)
+            {
+                MessageBox.Show("Hạn nộp phải ở tương lai.", "Dữ liệu không hợp lệ", MessageBoxButton.OK, MessageBoxImage.Warning);
+                return;
+            }
 
             if (_editingId == null)
             {
